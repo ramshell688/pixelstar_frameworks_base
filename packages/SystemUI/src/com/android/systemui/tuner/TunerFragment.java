@@ -16,17 +16,9 @@
 package com.android.systemui.tuner;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.hardware.display.AmbientDisplayConfiguration;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
@@ -58,24 +50,21 @@ public class TunerFragment extends PreferenceFragment {
             KEY_PLUGINS,
     };
 
-    private static final int MENU_REMOVE = Menu.FIRST + 1;
-
-    private final TunerService mTunerService;
-
     // We are the only ones who ever call this constructor, so don't worry about the warning
     @SuppressLint("ValidFragment")
-    public TunerFragment(TunerService tunerService) {
+    public TunerFragment() {
         super();
-        mTunerService = tunerService;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+/*
         setHasOptionsMenu(true);
     }
-/*
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -105,7 +94,9 @@ public class TunerFragment extends PreferenceFragment {
                 if (preference != null) getPreferenceScreen().removePreference(preference);
             }
         }
+    }
 
+/*
         if (Build.IS_DEBUGGABLE) {
             if (Settings.Secure.getInt(getContext().getContentResolver(), SETTING_SEEN_TUNER_WARNING,
                     0) == 0) {
@@ -115,6 +106,7 @@ public class TunerFragment extends PreferenceFragment {
             }
         }
     }
+*/
 
     private boolean alwaysOnAvailable() {
         return new AmbientDisplayConfiguration(getContext()).alwaysOnAvailable();
@@ -135,6 +127,7 @@ public class TunerFragment extends PreferenceFragment {
         MetricsLogger.visibility(getContext(), MetricsEvent.TUNER, false);
     }
 
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (Build.IS_DEBUGGABLE) {
@@ -174,4 +167,6 @@ public class TunerFragment extends PreferenceFragment {
                     }).show();
         }
     }
+*/
+
 }
