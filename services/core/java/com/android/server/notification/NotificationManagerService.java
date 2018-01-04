@@ -645,6 +645,8 @@ public class NotificationManagerService extends SystemService {
     private int mListenerHints;  // right now, all hints are global
     private int mInterruptionFilter = NotificationListenerService.INTERRUPTION_FILTER_UNKNOWN;
 
+    private boolean mSoundVibScreenOn;
+
     private SystemUiSystemPropertiesFlags.FlagResolver mFlagResolver;
 
     // used as a mutex for access to all active notifications & listeners
@@ -2119,6 +2121,8 @@ public class NotificationManagerService extends SystemService {
                 = Secure.getUriFor(Secure.LOCK_SCREEN_SHOW_NOTIFICATIONS);
         private final Uri SHOW_NOTIFICATION_SNOOZE
                 = Secure.getUriFor(Secure.SHOW_NOTIFICATION_SNOOZE);
+	private final Uri NOTIFICATION_SOUND_VIB_SCREEN_ON
+                = Settings.System.getUriFor(Settings.System.NOTIFICATION_SOUND_VIB_SCREEN_ON);
 
         SettingsObserver(Handler handler) {
             super(handler);
@@ -2141,10 +2145,10 @@ public class NotificationManagerService extends SystemService {
                     false, this, USER_ALL);
             resolver.registerContentObserver(LOCK_SCREEN_SHOW_NOTIFICATIONS,
                     false, this, USER_ALL);
-
             resolver.registerContentObserver(SHOW_NOTIFICATION_SNOOZE,
                     false, this, USER_ALL);
-
+	    resolver.registerContentObserver(NOTIFICATION_SOUND_VIB_SCREEN_ON,
+                    false, this, UserHandle.USER_ALL);
             update(null);
         }
 
@@ -2189,6 +2193,11 @@ public class NotificationManagerService extends SystemService {
                 if (!snoozeEnabled) {
                     unsnoozeAll();
                 }
+            }
+            if (uri == null || NOTIFICATION_SOUND_VIB_SCREEN_ON.equals(uri)) {
+                mSoundVibScreenOn = Settings.System.getIntForUser(resolver,
+                        Settings.System.NOTIFICATION_SOUND_VIB_SCREEN_ON, 1,
+                        UserHandle.USER_CURRENT) == 1;
             }
         }
 
