@@ -398,4 +398,6 @@ oneway interface IStatusBar
     void moveFocusedTaskToDesktop(int displayId);
 
     void toggleCameraFlash();
+
+    void killForegroundApp();
 }
