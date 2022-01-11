@@ -66,7 +66,9 @@ import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.disableflags.DisableFlagsLogger;
 import com.android.systemui.statusbar.notification.stack.StackStateAnimator;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
+import com.android.systemui.statusbar.policy.BrightnessMirrorController;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
+import com.android.systemui.statusbar.policy.SecureLockscreenQSDisabler;
 import com.android.systemui.util.Utils;
 
 import dalvik.annotation.optimization.NeverCompile;
@@ -118,6 +120,7 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
     private final FooterActionsController mFooterActionsController;
     private final FooterActionsViewModel.Factory mFooterActionsViewModelFactory;
     private final ListeningAndVisibilityLifecycleOwner mListeningAndVisibilityLifecycleOwner;
+    private final SecureLockscreenQSDisabler mSecureLockscreenQSDisabler;
     private boolean mShowCollapsedOnKeyguard;
     private boolean mLastKeyguardAndExpanded;
     /**
@@ -182,7 +185,8 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
             DumpManager dumpManager, QSLogger qsLogger,
             FooterActionsController footerActionsController,
             FooterActionsViewModel.Factory footerActionsViewModelFactory,
-            LargeScreenShadeInterpolator largeScreenShadeInterpolator) {
+            LargeScreenShadeInterpolator largeScreenShadeInterpolator,
+            SecureLockscreenQSDisabler secureLockscreenQSDisabler) {
         mRemoteInputQuickSettingsDisabler = remoteInputQsDisabler;
         mQsMediaHost = qsMediaHost;
         mQqsMediaHost = qqsMediaHost;
@@ -199,6 +203,7 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
         if (SceneContainerFlag.isEnabled()) {
             mStatusBarState = StatusBarState.SHADE;
         }
+        mSecureLockscreenQSDisabler = secureLockscreenQSDisabler;
     }
 
     /**
@@ -422,6 +427,7 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
         }
         int state2BeforeAdjustment = state2;
         state2 = mRemoteInputQuickSettingsDisabler.adjustDisableFlags(state2);
+        state2 = mSecureLockscreenQSDisabler.adjustDisableFlags(state2);
 
         mQsDisableFlagsLogger.logDisableFlagChange(
                 /* new= */ new DisableFlagsLogger.DisableState(state1, state2BeforeAdjustment),
