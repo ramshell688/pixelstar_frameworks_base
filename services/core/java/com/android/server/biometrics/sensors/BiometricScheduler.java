@@ -23,6 +23,7 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.WorkerThread;
 import android.content.Context;
+import android.content.res.Resources;
 import android.hardware.biometrics.IBiometricService;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
 import android.os.Handler;
@@ -178,6 +179,9 @@ public class BiometricScheduler<T, U> {
             });
         }
     }
+
+    private final boolean mCancelIfNotIdle = Resources.getSystem().getBoolean(
+            com.android.internal.R.bool.config_fpCancelIfNotIdle);;
 
     // Internal callback, notified when an operation is complete. Notifies the requester
     // that the operation is complete, before performing internal scheduler work (such as
@@ -349,8 +353,13 @@ public class BiometricScheduler<T, U> {
 
     protected void startNextOperationIfIdle() {
         if (mCurrentOperation != null) {
-            Slog.v(TAG, "Not idle, current operation: " + mCurrentOperation);
-            return;
+            if (mCancelIfNotIdle && !mCurrentOperation.isFinished()) {
+                Slog.v(TAG, "Not idle, cancelling current operation: " + mCurrentOperation);
+                mCurrentOperation.cancel(mHandler, mInternalCallback);
+            } else {
+                Slog.v(TAG, "Not idle, current operation: " + mCurrentOperation);
+                return;
+            }
         }
         if (mPendingOperations.isEmpty()) {
             Slog.d(TAG, "No operations, returning to idle");
