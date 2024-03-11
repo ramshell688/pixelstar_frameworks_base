@@ -167,7 +167,7 @@ class ScreenRecordPermissionDialogDelegate(
     private fun initRecordOptionsView() {
         audioSwitch = dialog.requireViewById(R.id.screenrecord_audio_switch)
         tapsSwitch = dialog.requireViewById(R.id.screenrecord_taps_switch)
-        skipTimeSwitch = requireViewById(R.id.screenrecord_skip_time_switch)
+        skipTimeSwitch = dialog.requireViewById(R.id.screenrecord_skip_time_switch)
 
         // Add these listeners so that the switch only responds to movement
         // within its target region, to meet accessibility requirements
@@ -178,10 +178,10 @@ class ScreenRecordPermissionDialogDelegate(
         updateTapsViewVisibility()
 
         options = dialog.requireViewById(R.id.screen_recording_options)
-        stopDotSwitch = requireViewById(R.id.screenrecord_stopdot_switch)
-        lowQualitySwitch = requireViewById(R.id.screenrecord_lowquality_switch)
-        longerDurationSwitch = requireViewById(R.id.screenrecord_longer_timeout_switch)
-        hevcSwitch = requireViewById(R.id.screenrecord_hevc_switch)
+        stopDotSwitch = dialog.requireViewById(R.id.screenrecord_stopdot_switch)
+        lowQualitySwitch = dialog.requireViewById(R.id.screenrecord_lowquality_switch)
+        longerDurationSwitch = dialog.requireViewById(R.id.screenrecord_longer_timeout_switch)
+        hevcSwitch = dialog.requireViewById(R.id.screenrecord_hevc_switch)
         val a: ArrayAdapter<*> =
             ScreenRecordingAdapter(
                 dialog.context,
