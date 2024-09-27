@@ -19,8 +19,10 @@ package com.android.systemui.statusbar.policy
 import android.app.StatusBarManager
 import android.content.Context
 import android.database.ContentObserver
+import android.net.Uri
 import android.os.Handler
 import android.os.UserHandle
+import android.provider.Settings
 import android.provider.Settings.System.SECURE_LOCKSCREEN_QS_DISABLED
 
 import com.android.systemui.dagger.qualifiers.Main
@@ -44,13 +46,18 @@ class SecureLockscreenQSDisabler @Inject constructor(
 
     init {
         val settingsObserver = object: ContentObserver(handler) {
-            override fun onChange(selfChange: Boolean) {
+            override fun onChange(selfChange: Boolean, uri: Uri?) {
                 disableQSOnSecureLockscreen = shouldDisableQS()
                 recomputeDisableFlags()
             }
         }
-        systemSettings.registerContentObserverForUser(SECURE_LOCKSCREEN_QS_DISABLED,
-            settingsObserver, UserHandle.USER_ALL)
+        // Use ContentResolver to register the content observer
+        context.contentResolver.registerContentObserver(
+            Settings.System.getUriFor(SECURE_LOCKSCREEN_QS_DISABLED),
+            false,
+            settingsObserver,
+            UserHandle.USER_ALL
+        )
     }
 
     fun adjustDisableFlags(state2: Int): Int {
