@@ -116,7 +116,7 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
         mListener = listener;
         mAudioSource = audioSource;
         mAvcProfileLevel = mContext.getResources().getString(
-                R.string.config_screenRecorderAVCProfileLevel);
+                com.android.systemui.res.R.string.config_screenRecorderAVCProfileLevel);
     }
 
     public void setLowQuality(boolean low) {
