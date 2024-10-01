@@ -19,6 +19,7 @@ package com.android.systemui.privacy
 import android.database.ContentObserver
 import android.os.Handler
 import android.os.UserHandle
+import android.net.Uri
 import android.provider.DeviceConfig
 import android.provider.Settings
 import com.android.internal.annotations.VisibleForTesting
@@ -67,19 +68,24 @@ class PrivacyConfig @Inject constructor(
         }
     }
 
+    private fun registerContentObserver(setting: String, observer: ContentObserver, userHandle: UserHandle) {
+	val uri: Uri = Settings.Secure.getUriFor(setting)
+        secureSettings.getContentResolver().registerContentObserver(uri, false, observer, userHandle.identifier)
+    }
+
     init {
         dumpManager.registerDumpable(TAG, this)
-        secureSettings.registerContentObserverForUser(
+        registerContentObserver(
             Settings.Secure.ENABLE_LOCATION_PRIVACY_INDICATOR,
-            settingsObserver, UserHandle.USER_CURRENT
+            settingsObserver, UserHandle.of(UserHandle.USER_CURRENT)
         )
-        secureSettings.registerContentObserverForUser(
+        registerContentObserver(
             Settings.Secure.ENABLE_CAMERA_PRIVACY_INDICATOR,
-            settingsObserver, UserHandle.USER_CURRENT
+            settingsObserver, UserHandle.of(UserHandle.USER_CURRENT)
         )
-        secureSettings.registerContentObserverForUser(
+        registerContentObserver(
             Settings.Secure.ENABLE_PROJECTION_PRIVACY_INDICATOR,
-            settingsObserver, UserHandle.USER_CURRENT
+            settingsObserver, UserHandle.of(UserHandle.USER_CURRENT)
         )
     }
 
